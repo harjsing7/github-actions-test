@@ -1,0 +1,142 @@
+name: 'Terraform'
+
+on:
+  workflow_call:
+    secrets:
+      IDENTITYPROVIDER:
+        required: true
+      SVC:
+        required: true
+      CLUSTER:
+        required: true
+      LOCATION:
+        required: true
+    inputs:
+      fileName:
+        type: string
+        description: 'Name of the file to run'
+        required: true
+
+permissions:
+  contents: read
+  id-token: 'write'
+
+jobs:
+  terraform_validate:
+    name: 'Terraform Validate'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0.8.0'
+      with:
+        workload_identity_provider: ${{ secrets.IDENTITYPROVIDER }} 
+        service_account: ${{ secrets.SVC }}
+        access_token_lifetime: '300s'
+        token_format: 'access_token'
+        id_token_include_email: true
+    
+    - id: get-gke-credentials
+      uses: google-github-actions/get-gke-credentials@v0.4.0
+      with:
+        cluster_name: ${{ secrets.CLUSTER }}
+        location: ${{ secrets.LOCATION }}
+
+    - name: Get GKE Nodes
+      run: kubectl get nodes
+  
+    - name: GCloud Show Node Pools
+      run: gcloud container node-pools list --zone ${{ secrets.LOCATION}} --cluster ${{ secrets.CLUSTER }}
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform -chdir=./terraform/gcp init
+
+    # Checks that all Terraform configuration files are valid
+    - name: Terraform Validate
+      run: terraform -chdir=./terraform/gcp validate
+      
+  terraform_plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    needs: [terraform_validate]
+    environment: dev
+
+    steps:
+
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0.8.0'
+      with:
+        workload_identity_provider: ${{ secrets.IDENTITYPROVIDER }} 
+        service_account: ${{ secrets.SVC }}
+        access_token_lifetime: '300s'
+        token_format: 'access_token'
+        id_token_include_email: true
+    
+    - id: get-gke-credentials
+      uses: google-github-actions/get-gke-credentials@v0.4.0
+      with:
+        cluster_name: ${{ secrets.CLUSTER }}
+        location: ${{ secrets.LOCATION }}
+
+    - name: Get GKE Nodes
+      run: kubectl get nodes
+  
+    - name: GCloud Show Node Pools
+      run: gcloud container node-pools list --zone ${{ secrets.LOCATION}} --cluster ${{ secrets.CLUSTER }}
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform -chdir=./terraform/gcp init
+
+    - name: Terraform Plan
+      run: terraform -chdir=./terraform/gcp plan
+      
+  terraform_apply:
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
+    needs: [terraform_plan]
+    environment: dev
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0.8.0'
+      with:
+        workload_identity_provider: ${{ secrets.IDENTITYPROVIDER }} 
+        service_account: ${{ secrets.SVC }}
+        access_token_lifetime: '300s'
+        token_format: 'access_token'
+        id_token_include_email: true
+    
+    - id: get-gke-credentials
+      uses: google-github-actions/get-gke-credentials@v0.4.0
+      with:
+        cluster_name: ${{ secrets.CLUSTER }}
+        location: ${{ secrets.LOCATION }}
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform -chdir=./terraform/gcp init
+
+    - name: Terraform Plan
+      run: terraform -chdir=./terraform/gcp plan
+
+    - name: Terraform Apply
+      run: terraform -chdir=./terraform/gcp apply -auto-approve 
