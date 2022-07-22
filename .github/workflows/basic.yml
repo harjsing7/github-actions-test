@@ -48,6 +48,7 @@ jobs:
           SVC: ${{ secrets.SVC }}
           LOCATION: ${{ secrets.LOCATION }}
           CLUSTER: ${{ secrets.CLUSTER }}
+          PROJECT: ${{ secrets.PROJECT }}
         with:
           fileName: "${{ inputs.tf-options }}"
 
