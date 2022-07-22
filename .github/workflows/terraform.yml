@@ -117,7 +117,7 @@ jobs:
 
     - id: 'auth'
       name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v0.8.0'
+      uses: 'google-github-actions/auth@v0'
       with:
         workload_identity_provider: ${{ secrets.IDENTITYPROVIDER }} 
         service_account: ${{ secrets.SVC }}
@@ -126,7 +126,7 @@ jobs:
         id_token_include_email: true
     
     - id: get-gke-credentials
-      uses: google-github-actions/get-gke-credentials@v0.4.0
+      uses: google-github-actions/get-gke-credentials@v0
       with:
         cluster_name: ${{ secrets.CLUSTER }}
         location: ${{ secrets.LOCATION }}
