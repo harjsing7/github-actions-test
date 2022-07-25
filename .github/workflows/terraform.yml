@@ -93,12 +93,6 @@ jobs:
         cluster_name: ${{ secrets.CLUSTER }}
         location: ${{ secrets.LOCATION }}
 
-    - name: Get GKE Nodes
-      run: kubectl get nodes
-  
-    - name: GCloud Show Node Pools
-      run: gcloud container node-pools list --zone ${{ secrets.LOCATION}} --cluster ${{ secrets.CLUSTER }}
-
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform -chdir=./terraform/gcp init
