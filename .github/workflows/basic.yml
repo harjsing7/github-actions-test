@@ -4,24 +4,22 @@ name: CI-TF
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  #push:
-  #  branches: [ "main" ]
-  #pull_request:
-  #  branches: [ "main" ]
+  push:
+    # only trigger on branches that have a tf/ prefix
+    branches: '*'
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-    inputs:
-      tf-options:
-        type: choice
-        description: Which tf file to run
-        required: true
-        options:
-          - foo/gke.tf
-          - bar/gke.tf
-      environment:
-          type: environment
+  #workflow_dispatch:
+  #  inputs:
+  #    tf-options:
+  #      type: choice
+  #      description: Which tf file to run
+  #      required: true
+  #      options:
+  #        - foo/gke.tf
+  #        - bar/gke.tf
+  #    environment:
+  #        type: environment
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -33,22 +31,30 @@ jobs:
       name: dev
       url: 'http://cool.link.we.can.show.here.com'
 
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Get Host Info
         run: lsb_release -a
-
         
-  TF:
-        uses: ./.github/workflows/terraform.yml
-        needs: [Setup]
-        secrets:
-          IDENTITYPROVIDER: ${{ secrets.IDENTITYPROVIDER }}
-          SVC: ${{ secrets.SVC }}
-          LOCATION: ${{ secrets.LOCATION }}
-          CLUSTER: ${{ secrets.CLUSTER }}
-          PROJECT: ${{ secrets.PROJECT }}
+      - uses: actions/checkout@v2
         with:
-          fileName: "${{ inputs.tf-options }}"
+          # checkout full tree
+          fetch-depth: 0
+          
+      - run: |
+          for commit in $(git rev-list ${{ github.event.before}}..${{ github.sha}}); do       
+              echo "Github.event.before: ${{ github.event.before}} && Github.sh: ${{ github.sha}}"
+          done
+        
+  #TF:
+  #      uses: ./.github/workflows/terraform.yml
+  #      needs: [Setup]
+  #      secrets:
+  #        IDENTITYPROVIDER: ${{ secrets.IDENTITYPROVIDER }}
+  #        SVC: ${{ secrets.SVC }}
+  #        LOCATION: ${{ secrets.LOCATION }}
+  #        CLUSTER: ${{ secrets.CLUSTER }}
+  #        PROJECT: ${{ secrets.PROJECT }}
+  #      with:
+  #        fileName: "${{ inputs.tf-options }}"
 
