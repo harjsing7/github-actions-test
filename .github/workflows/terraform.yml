@@ -93,9 +93,6 @@ jobs:
     - name: Terraform Init
       run: terraform -chdir=./terraform/gcp init
 
-    - name: Terraform import
-      run: terraform -chdir=./terraform/gcp import google_project.firstproject ${{ secrets.PROJECT }}
-
     - name: Terraform Plan
       run: terraform -chdir=./terraform/gcp plan -no-color >> $GITHUB_STEP_SUMMARY
 
