@@ -9,17 +9,17 @@ on:
     branches: 'tf/*'
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-    inputs:
-      tf-options:
-        type: choice
-        description: Which tf file to run
-        required: true
-        options:
-          - foo/gke.tf
-          - bar/gke.tf
-      environment:
-          type: environment
+  #workflow_dispatch:
+  #  inputs:
+  #    tf-options:
+  #      type: choice
+  #      description: Which tf file to run
+  #      required: true
+  #      options:
+  #        - foo/gke.tf
+  #        - bar/gke.tf
+  #    environment:
+  #        type: environment
           
           
 
