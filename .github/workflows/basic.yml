@@ -20,8 +20,6 @@ on:
   #        - bar/gke.tf
   #    environment:
   #        type: environment
-          
-          
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -32,8 +30,6 @@ jobs:
     environment:
       name: dev
       url: 'http://cool.link.we.can.show.here.com'
-
-  
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
