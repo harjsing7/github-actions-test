@@ -42,11 +42,12 @@ jobs:
         with:
           # checkout full tree
           fetch-depth: 0
-      - run: |
-          for commit in $(git rev-list ${{ github.base_ref }}..${{ github.head_ref }}); do
-              git checkout $commit
-              echo "run test"
-          done
+      - run: git log
+      #- run: |
+      #    for commit in $(git rev-list ${{ github.base_ref }}..${{ github.head_ref }}); do
+      #        git checkout $commit
+      #        echo "run test"
+      #    done
         
   #TF:
   #      uses: ./.github/workflows/terraform.yml
