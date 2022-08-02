@@ -44,7 +44,8 @@ jobs:
           fetch-depth: 0
           
       - run: |
-          for commit in $(git rev-list ${{ github.event.before}}..${{ github.sha}}); do       
+          for commit in $(git rev-list ${{ github.event.before}}..${{ github.sha}}); do
+              git checkout $commit
               echo "Github.event.before: ${{ github.event.before}} && Github.sh: ${{ github.sha}}"
           done
         
