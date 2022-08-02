@@ -47,7 +47,8 @@ jobs:
       - run: |
           for commit in $(git rev-list origin/${{ github.base_ref }}..origin/${{ github.head_ref }}); do
               git checkout $commit
-              echo "run test"
+              git show $commit
+              echo "-----------------"
           done
         
   #TF:
