@@ -8,7 +8,6 @@ resource "google_project_iam_custom_role" "read-only-role" {
     "container.clusterRoleBindings.create",
     "container.clusterRoles.get",
     "container.clusterRoles.list",
-    "container.clusterRoles.create",
   ]
   project = google_project.firstproject.project_id
   role_id = "read_only_role"
