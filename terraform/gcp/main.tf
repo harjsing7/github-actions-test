@@ -7,7 +7,14 @@ terraform {
   }
 }
 
+
 provider "google" {}
+terraform {
+  backend "gcs" {
+    bucket = "tf-state-keeper"
+    prefix = "terraform/state"
+  }
+}
 
 resource "google_project" "firstproject" {
   billing_account = "0164E4-085EA3-94ED1F"
