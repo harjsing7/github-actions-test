@@ -4,9 +4,11 @@ name: CI-TF
 
 # Controls when the workflow will run
 on:
-  push:
+  #push:
     # only trigger on branches that have a tf/ prefix
-    branches: '*'
+  #  branches: '*'
+  pull_request:
+    types: [opened]
 
   # Allows you to run this workflow manually from the Actions tab
   #workflow_dispatch:
@@ -42,7 +44,8 @@ jobs:
           fetch-depth: 0
           
       - run: |
-          for commit in $(git rev-list ${{ github.event.before}}..${{ github.sha}}); do       
+          for commit in $(git rev-list ${{ github.event.before}}..${{ github.sha}}); do
+              git checkout $commit
               echo "Github.event.before: ${{ github.event.before}} && Github.sh: ${{ github.sha}}"
           done
         
