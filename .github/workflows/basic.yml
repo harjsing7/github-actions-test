@@ -42,7 +42,10 @@ jobs:
         with:
           # checkout full tree
           fetch-depth: 0
-      - run: git rev-list main..tf-test
+      - run: git remote -v
+      - run: git branch -avv
+
+      - run: git rev-list origin/main..origin/tf-test
       #- run: |
       #    for commit in $(git rev-list ${{ github.base_ref }}..${{ github.head_ref }}); do
       #        git checkout $commit
