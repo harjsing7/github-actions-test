@@ -45,9 +45,7 @@ jobs:
       - run: git remote -v
       - id: check-workflows-changed
         run: |
-          changed=$(git diff --quiet HEAD origin/${{ github.base_ref }} -- ./.github/workflows || echo workflows_changed)
-          echo ::set-output name=workflows_changed::"$changed"
-      - run: echo "Changed-> ${{ steps.check-workflows-changed.outputs.workflows_changed }}"
+           git diff --quiet HEAD origin/${{ github.base_ref }} -- ./.github/workflows
 
       - run: git branch -avv
       - run: |
@@ -57,15 +55,15 @@ jobs:
               echo "-----------------"
           done
         
-  #TF:
-  #      uses: ./.github/workflows/terraform.yml
-  #      needs: [Setup]
-  #      secrets:
-  #        IDENTITYPROVIDER: ${{ secrets.IDENTITYPROVIDER }}
-  #        SVC: ${{ secrets.SVC }}
-  #        LOCATION: ${{ secrets.LOCATION }}
-  #        CLUSTER: ${{ secrets.CLUSTER }}
-  #        PROJECT: ${{ secrets.PROJECT }}
-  #      with:
-  #        fileName: "${{ inputs.tf-options }}"
+  TF:
+        uses: ./.github/workflows/terraform.yml
+        needs: [Setup]
+        secrets:
+          IDENTITYPROVIDER: ${{ secrets.IDENTITYPROVIDER }}
+          SVC: ${{ secrets.SVC }}
+          LOCATION: ${{ secrets.LOCATION }}
+          CLUSTER: ${{ secrets.CLUSTER }}
+          PROJECT: ${{ secrets.PROJECT }}
+        with:
+          fileName: "${{ inputs.tf-options }}"
 
