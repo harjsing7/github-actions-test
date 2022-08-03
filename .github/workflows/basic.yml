@@ -49,7 +49,6 @@ jobs:
           echo ::set-output name=workflows_changed::"$changed"
       - run: echo "Changed-> ${{ steps.check-workflows-changed.outputs.workflows_changed }}"
 
-      - run: git branch -avv
       - run: |
           for commit in $(git rev-list origin/${{ github.base_ref }}..origin/${{ github.head_ref }}); do
               git checkout $commit
