@@ -47,7 +47,7 @@ jobs:
         run: |
           changed=$(git diff --quiet HEAD ${{ github.base_ref }}-- ./.github/workflows || echo workflows_changed)
           echo ::set-output name=workflows_changed::"$changed"
-      - run: echo "Changed-> ${{ steps.vars.outputs.pr_title }}"
+      - run: echo "Changed-> ${{ steps.check-workflows-changed.outputs.workflows_changed }}"
 
       - run: git branch -avv
       - run: |
