@@ -25,13 +25,11 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   Setup:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment:
       name: dev
-      url: 'http://cool.link.we.can.show.here.com'
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,18 +40,11 @@ jobs:
         with:
           # checkout full tree
           fetch-depth: 0
-      - run: git remote -v
-      - id: check-workflows-changed
+      
+      - name: Validate Workflows Unchanged
+        id: check-workflows-changed
         run: |
-           git diff --quiet HEAD origin/${{ github.base_ref }} -- ./.github/workflows
-
-      - run: git branch -avv
-      - run: |
-          for commit in $(git rev-list origin/${{ github.base_ref }}..origin/${{ github.head_ref }}); do
-              git checkout $commit
-              git show $commit
-              echo "-----------------"
-          done
+           git diff --quiet HEAD origin/main -- ./.github/workflows
         
   TF:
         uses: ./.github/workflows/terraform.yml
