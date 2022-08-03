@@ -13,11 +13,11 @@ on:
         required: true
       PROJECT:
         required: true
-    inputs:
-      fileName:
-        type: string
-        description: 'Name of the file to run'
-        required: true
+    #inputs:
+    #  fileName:
+    #    type: string
+    #    description: 'Name of the file to run'
+    #    required: true
 
 permissions:
   contents: read
