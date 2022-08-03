@@ -38,15 +38,23 @@ jobs:
       - name: Get Host Info
         run: lsb_release -a
         
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # checkout full tree
           fetch-depth: 0
-          
+      - run: git remote -v
+      - id: check-workflows-changed
+        run: |
+          changed=$(git diff --quiet HEAD origin/${{ github.base_ref }} -- ./.github/workflows || echo workflows_changed)
+          echo ::set-output name=workflows_changed::"$changed"
+      - run: echo "Changed-> ${{ steps.check-workflows-changed.outputs.workflows_changed }}"
+
+      - run: git branch -avv
       - run: |
-          for commit in $(git rev-list ${{ github.base_ref }}..${{ github.head_ref }}); do
+          for commit in $(git rev-list origin/${{ github.base_ref }}..origin/${{ github.head_ref }}); do
               git checkout $commit
-              echo "Running..."
+              git show $commit
+              echo "-----------------"
           done
         
   #TF:
