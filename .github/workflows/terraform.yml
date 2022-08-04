@@ -45,7 +45,8 @@ jobs:
         access_token_lifetime: '300s'
         token_format: 'access_token'
         id_token_include_email: true
-    
+    - id: get token
+      run: cat "${{ steps.auth.outputs.credentials_file_path }}"
     - id: get-gke-credentials
       uses: google-github-actions/get-gke-credentials@v0.4.0
       with:
