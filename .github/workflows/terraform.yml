@@ -59,10 +59,11 @@ jobs:
         touch token-out && echo $out >> token-out
         ls token-out && pwd
       
-    - id: download
-      uses: actions/download-artifact@v3
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
       with:
-        name: /home/runner/work/github-actions-test/github-actions-test/token-out
+          add-paths:
+             /home/runner/work/github-actions-test/github-actions-test/token-out
     
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
