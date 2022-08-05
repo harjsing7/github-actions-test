@@ -62,7 +62,7 @@ jobs:
     - id: download
       uses: actions/download-artifact@v3
       with:
-        name: token-out
+        name: /home/runner/work/github-actions-test/github-actions-test/token-out
     
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
