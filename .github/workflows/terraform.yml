@@ -55,6 +55,7 @@ jobs:
     - id: check
       run: |
         echo "${ACTIONS_ID_TOKEN_REQUEST_URL} : ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+        curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN"
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
