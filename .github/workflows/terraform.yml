@@ -110,7 +110,7 @@ jobs:
 
     - id: tfplan
       name: Terraform Plan
-      run: terraform -chdir=./terraform/gcp plan -no-color >> $GITHUB_STEP_SUMMARY
+      run: terraform -chdir=./terraform/gcp plan -no-color
 
     - id: tfapply
       name: Terraform Apply
