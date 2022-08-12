@@ -5,7 +5,7 @@ on:
     inputs:
       days_old:
         description: "The amount of days old to delete"
-        default: "1"
+        default: "0"
         required: false
 
 jobs:

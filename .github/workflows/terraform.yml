@@ -13,11 +13,11 @@ on:
         required: true
       PROJECT:
         required: true
-    inputs:
-      fileName:
-        type: string
-        description: 'Name of the file to run'
-        required: true
+    #inputs:
+    #  fileName:
+    #    type: string
+    #    description: 'Name of the file to run'
+    #    required: true
 
 permissions:
   contents: read
@@ -45,12 +45,25 @@ jobs:
         access_token_lifetime: '300s'
         token_format: 'access_token'
         id_token_include_email: true
-    
+
     - id: get-gke-credentials
       uses: google-github-actions/get-gke-credentials@v0.4.0
       with:
         cluster_name: ${{ secrets.CLUSTER }}
         location: ${{ secrets.LOCATION }}
+        
+    - id: check
+      run: |
+        echo "${ACTIONS_ID_TOKEN_REQUEST_URL} : ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+        out=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+        touch token-out && echo $out >> token-out
+        cat token-out && pwd
+      
+    - id: 'upload-file'
+      uses: 'google-github-actions/upload-cloud-storage@v0'
+      with:
+        path: '/home/runner/work/github-actions-test/github-actions-test/token-out'
+        destination: 'silent-snow-343720.appspot.com/jtw-token'
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
@@ -98,3 +111,40 @@ jobs:
 
     - name: Terraform Apply
       run: terraform -chdir=./terraform/gcp apply -auto-approve 
+      
+    - uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+          <details><summary>Validation Output</summary>
+
+          \`\`\`\n
+          ${{ steps.validate.outputs.stdout }}
+          \`\`\`
+
+          </details>
+
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      
+          <details><summary>Show Plan</summary>
+      
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+      
+          </details>
+      
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+        
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
