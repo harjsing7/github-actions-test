@@ -104,13 +104,16 @@ jobs:
         location: ${{ secrets.LOCATION }}
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
+    - id: tfinit
+      name: Terraform Init
       run: terraform -chdir=./terraform/gcp init
 
-    - name: Terraform Plan
+    - id: tfplan
+      name: Terraform Plan
       run: terraform -chdir=./terraform/gcp plan -no-color >> $GITHUB_STEP_SUMMARY
 
-    - name: Terraform Apply
+    - id: tfapply
+      name: Terraform Apply
       run: terraform -chdir=./terraform/gcp apply -auto-approve 
       
     - uses: actions/github-script@v6
@@ -120,18 +123,10 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-          <details><summary>Validation Output</summary>
+          const output = `
+          #### Terraform Initialization ⚙️\`${{ steps.tfinit.outcome }}\`
 
-          \`\`\`\n
-          ${{ steps.validate.outputs.stdout }}
-          \`\`\`
-
-          </details>
-
-          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.tfplan.outcome }}\`
       
           <details><summary>Show Plan</summary>
       
