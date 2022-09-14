@@ -1,0 +1,13 @@
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 
+
+      - name: "Get Tag"
+        run: |
+           echo "GITHUB_REF is ${GITHUB_REF}"
