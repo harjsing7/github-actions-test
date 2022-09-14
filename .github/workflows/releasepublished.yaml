@@ -1,3 +1,5 @@
+name: OnReleasePublished
+
 on:
   release:
     types: [published]
